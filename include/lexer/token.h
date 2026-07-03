@@ -2,7 +2,8 @@
 #define TOKEN_H
 
 typedef enum TokenType {
-  IDENTIFIER = 0,
+  TOK_IDENTIFIER = 0,
+  TOK_EOF
 } TokenType;
 
 typedef struct Token {
@@ -13,7 +14,7 @@ typedef struct Token {
   int line, column;
 } Token;
 
-Token create_token(
+Token token_init(
     TokenType type, 
     const char* start, 
     int length, 

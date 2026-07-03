@@ -1,6 +1,6 @@
 #include "lexer/token.h"
 
-Token create_token(
+Token token_init(
     TokenType type, 
     const char* start, 
     int length, 
