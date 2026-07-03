@@ -3,10 +3,16 @@
 
 #include <unistd.h>
 #include "logger.h"
+#include "lexer/keyword_list.h"
 
 typedef enum TokenType {
   TOK_IDENTIFIER = 0,
-  
+
+  /* keywords generated from keyword_list.h */
+#define X(token, str) token,
+  KEYWORD_LIST
+#undef X
+
   /* operators */
   TOK_PLUS, // '+'
   TOK_MINUS, // '-'

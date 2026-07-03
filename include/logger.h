@@ -1,8 +1,8 @@
 #ifndef LOGGER_H
 #define LOGGER_H
 
-#include <stdio.h>
 #include <stdbool.h>
+#include <stdio.h>
 
 extern bool is_verbose;
 

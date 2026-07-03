@@ -1,5 +1,6 @@
 #include "lexer/lexer.h"
 #include "lexer/token.h"
+#include "lexer/keyword.h"
 
 #include <ctype.h>
 #include <stdlib.h>
@@ -30,12 +31,10 @@ Token lexer_next(Lexer* lexer) {
   
   if(isalpha(c) || c == '_') return make_keyword_or_identifier(lexer, start, column, line);
   switch(c) {
-    case '\0':  type = TOK_EOF;     break;
-    case '+':   type = TOK_PLUS;    break;
-    case '-':   type = TOK_MINUS;   break;
-    default:
-      type = TOK_IDENTIFIER;
-      break;
+    case '\0':  type = TOK_EOF;             break;
+    case '+':   type = TOK_PLUS;            break;
+    case '-':   type = TOK_MINUS;           break;
+    default:    type = TOK_IDENTIFIER;      break;
   }
 
   return make_token(start, 1, column, line, type);
@@ -51,9 +50,10 @@ void lexer_free(Lexer* lexer) {
 }
 
 Token make_keyword_or_identifier(Lexer* lexer, char* start, size_t column, size_t line) {
-  TokenType type = TOK_IDENTIFIER;
   while(isalnum(curr(lexer)) || curr(lexer) == '_') advance(lexer);
   size_t length = (size_t)(lexer->current - start);
+  
+  TokenType type = lookup_keyword(start, length);
   return make_token(start, length, column, line, type);
 }
 
