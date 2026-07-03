@@ -11,6 +11,7 @@ Token make_keyword_or_identifier(Lexer* lexer, char* start, size_t column, size_
 char advance(Lexer* lexer);
 char curr(Lexer* lexer);
 char peek(Lexer* lexer);
+bool match(Lexer* lexer, char expected);
 
 bool is_at_end(Lexer* lexer);
 
@@ -32,12 +33,36 @@ Token lexer_next(Lexer* lexer) {
   if(isalpha(c) || c == '_') return make_keyword_or_identifier(lexer, start, column, line);
   switch(c) {
     case '\0':  type = TOK_EOF;             break;
-    case '+':   type = TOK_PLUS;            break;
-    case '-':   type = TOK_MINUS;           break;
+    case '+':   type = match(lexer, '+') ? TOK_INCREMENT
+                      : match(lexer, '=') ? TOK_PLUS_EQUAL
+                      : TOK_PLUS;            break;
+    case '-':   type = match(lexer, '-') ? TOK_DECREMENT
+                      : match(lexer, '=') ? TOK_MINUS_EQUAL
+                      : TOK_MINUS;           break;
+    case '*':   type = match(lexer, '=') ? TOK_STAR_EQUAL : TOK_MULTIPLY; break;
+    case '/':   type = match(lexer, '=') ? TOK_SLASH_EQUAL : TOK_DIVIDE;  break;
+    case '%':   type = match(lexer, '=') ? TOK_PERCENT_EQUAL : TOK_PERCENT; break;
+    case '=':   type = match(lexer, '=') ? TOK_EQUALS : TOK_ASSIGN;       break;
+    case '!':   type = match(lexer, '=') ? TOK_NOT_EQUALS : TOK_NOT;      break;
+    case '^':   type = match(lexer, '=') ? TOK_CARET_EQUAL : TOK_XOR;     break;
+    case '~':   type = TOK_BIT_NOT;         break;
+    case '>':   type = match(lexer, '=') ? TOK_GREATER_OR_EQUALS
+                      : match(lexer, '>') ? TOK_RIGHT_SHIFT
+                      : TOK_GREATER;         break;
+    case '<':   type = match(lexer, '=') ? TOK_LOWER_OR_EQUALS
+                      : match(lexer, '<') ? TOK_LEFT_SHIFT
+                      : TOK_LOWER;           break;
+    case '&':   type = match(lexer, '&') ? TOK_AND
+                      : match(lexer, '=') ? TOK_AMP_EQUAL
+                      : TOK_BIT_AND;         break;
+    case '|':   type = match(lexer, '|') ? TOK_OR
+                      : match(lexer, '=') ? TOK_PIPE_EQUAL
+                      : TOK_BIT_OR;          break;
     default:    type = TOK_IDENTIFIER;      break;
   }
 
-  return make_token(start, 1, column, line, type);
+  size_t length = (size_t)(lexer->current - start);
+  return make_token(start, length, column, line, type);
 }
 
 void lexer_free(Lexer* lexer) {
@@ -83,6 +108,12 @@ char peek(Lexer* lexer) {
 
 bool is_at_end(Lexer* lexer) {
   return lexer->current >= lexer->code + lexer->code_length;
+}
+
+bool match(Lexer* lexer, char expected) {
+  if(curr(lexer) != expected) return false;
+  advance(lexer);
+  return true;
 }
 
 void skip_whitespace(Lexer* lexer) {
