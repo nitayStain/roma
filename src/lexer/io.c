@@ -46,7 +46,7 @@ Lexer* lexer_from_file(const char* filename)
   Lexer* lexer = (Lexer*)malloc(sizeof(Lexer));
   lexer->code = file_content;
   lexer->code_length = file_len;
-  lexer->current = 0; 
+  lexer->current = file_content;
 
   lexer->pos.column = 0;
   lexer->pos.line = 0;

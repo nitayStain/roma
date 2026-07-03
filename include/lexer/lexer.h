@@ -5,9 +5,11 @@
 #include <unistd.h>
 
 typedef struct Lexer {
-  char* code;
+  const char* code;
+  char* current;
+
   size_t code_length;
-  size_t current;
+
   struct {
     size_t line;
     size_t column;

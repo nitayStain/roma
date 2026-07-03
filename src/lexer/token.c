@@ -1,18 +1,18 @@
 #include "lexer/token.h"
 
-Token token_init(
-    TokenType type, 
-    const char* start, 
-    int length, 
-    int line, 
-    int column) {
+Token make_token(
+  char* start,
+  size_t length,
+  size_t column,
+  size_t line,
+  TokenType type
+    ) {
   Token token = {};
-  token.type = type;
-  token.value = (char*)start;
+  token.start = start;
   token.length = length;
-  token.line = line;
-  token.column = column;
-  
+  token.pos.column = column;
+  token.pos.line = line;
+  token.type = type;
+
   return token;
 }
-

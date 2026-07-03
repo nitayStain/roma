@@ -1,24 +1,42 @@
 #ifndef TOKEN_H
 #define TOKEN_H
 
+#include <unistd.h>
+#include "logger.h"
+
 typedef enum TokenType {
   TOK_IDENTIFIER = 0,
+  
+  /* operators */
+  TOK_PLUS, // '+'
+  TOK_MINUS, // '-'
+
   TOK_EOF
 } TokenType;
 
 typedef struct Token {
   TokenType type;
-  char* value;
-  int length;
-
-  int line, column;
+  char* start;
+  size_t length;
+  
+  struct {
+    size_t line;
+    size_t column;
+  } pos;
 } Token;
 
-Token token_init(
-    TokenType type, 
-    const char* start, 
-    int length, 
-    int line, 
-    int column);
+Token make_token(
+  char* start,
+  size_t length,
+  size_t column,
+  size_t line,
+  TokenType type
+    );
+
+// debug-only: dumps token data
+#define LOG_TOKEN(token) \
+  LOG("token type=%d value='%.*s' line=%zu col=%zu\n", \
+      (token).type, (int)(token).length, (token).start, \
+      (token).pos.line, (token).pos.column)
 
 #endif // TOKEN_H

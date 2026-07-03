@@ -27,6 +27,12 @@ int main(int argc, char** argv)
   
   Lexer* lexer = lexer_from_file(options.filename);
 
+  Token token;
+  do {
+    token = lexer_next(lexer);
+    LOG_TOKEN(token);
+  } while(token.type != TOK_EOF);
+
   lexer_free(lexer);
   return 0;
 }
