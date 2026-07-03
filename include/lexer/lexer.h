@@ -2,6 +2,7 @@
 #define LEXER_H
 
 #include "lexer/token.h"
+#include "error.h"
 #include <unistd.h>
 
 typedef struct Lexer {
@@ -14,6 +15,8 @@ typedef struct Lexer {
     size_t line;
     size_t column;
   } pos;
+
+  ErrorStack errors;
 } Lexer;
 
 Lexer* lexer_from_file(const char* filename);

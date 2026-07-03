@@ -1,5 +1,6 @@
 #include "lexer/lexer.h"
 
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -8,8 +9,8 @@ char* read_file(const char* filename, size_t* buffer_len)
   FILE* file = fopen(filename, "rb");
   if(!file) return NULL;
 
-  if(fseek(file, 0, SEEK_END) != 0) goto error_abort; 
-  
+  if(fseek(file, 0, SEEK_END) != 0) goto error_abort;
+
   long file_size = ftell(file);
   if(file_size < 0) goto error_abort;
 
@@ -25,23 +26,23 @@ char* read_file(const char* filename, size_t* buffer_len)
   }
 
   *buffer_len = bytes_read;
-  
+
   fclose(file);
   return buff;
-  
-error_abort:
-  fclose(file);
-  return NULL;
+
+error_abort: {
+   int saved_errno = errno;
+    fclose(file);
+    errno = saved_errno;
+    return NULL;
+  }
 }
 
 Lexer* lexer_from_file(const char* filename)
 {
   size_t file_len;
   char* file_content = read_file(filename, &file_len);
-  if(!file_content) {
-    perror("failed reading file");
-    return NULL;
-  }
+  if(!file_content) return NULL;
 
   Lexer* lexer = (Lexer*)malloc(sizeof(Lexer));
   lexer->code = file_content;
@@ -50,6 +51,8 @@ Lexer* lexer_from_file(const char* filename)
 
   lexer->pos.column = 0;
   lexer->pos.line = 0;
+
+  error_stack_init(&lexer->errors);
 
   return lexer;
 }

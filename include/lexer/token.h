@@ -54,6 +54,19 @@ typedef enum TokenType {
   TOK_RIGHT_SHIFT, // '>>'
   TOK_XOR, // '^'
 
+  /* literals */
+  TOK_INT_LITERAL,
+  TOK_FLOAT_LITERAL,
+  TOK_STRING_LITERAL,
+
+  /* punctuation */
+  TOK_LPAREN, // '('
+  TOK_RPAREN, // ')'
+  TOK_LBRACE, // '{'
+  TOK_RBRACE, // '}'
+  TOK_SEMICOLON, // ';'
+
+  TOK_ERROR, // lexer couldn't produce a valid token; details in Lexer.errors
   TOK_EOF
 } TokenType;
 

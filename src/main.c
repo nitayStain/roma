@@ -1,6 +1,12 @@
 #include "options/options.h"
 #include "lexer/lexer.h"
+#include "parser/parser.h"
+#include "error.h"
 #include "logger.h"
+
+#include <errno.h>
+#include <libgen.h>
+#include <string.h>
 
 // NOTE: may move this to another file of build consts
 // will stay here for now
@@ -13,7 +19,6 @@ bool is_verbose = true;
 
 int main(int argc, char** argv)
 {
-  printf("%s", HEADER);
 
   Options options = {};
   init_options(&options, argv, argc);
@@ -26,13 +31,27 @@ int main(int argc, char** argv)
   LOG("Starting to parse code\n");
   
   Lexer* lexer = lexer_from_file(options.filename);
+  if(!lexer) {
+    fprintf(stderr, "%s: failed reading '%s' (%s)\n", basename(argv[0]), options.filename, strerror(errno));
+    return 1;
+  }
+  
+  printf("%s", HEADER);
+  
+  Parser parser = parser_init(lexer);
 
-  Token token;
-  do {
-    token = lexer_next(lexer);
-    LOG_TOKEN(token);
-  } while(token.type != TOK_EOF);
+  Node* program = parse_program(&parser);
 
+  bool has_errors = error_stack_has_errors(&lexer->errors) || error_stack_has_errors(&parser.errors);
+  if(has_errors) {
+    error_stack_print(&lexer->errors, stderr);
+    error_stack_print(&parser.errors, stderr);
+  } else {
+    ast_print(program, 0);
+  }
+
+  ast_free(program);
+  parser_free(&parser);
   lexer_free(lexer);
-  return 0;
+  return has_errors ? 1 : 0;
 }
