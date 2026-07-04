@@ -406,14 +406,34 @@ static Node* parse_unary(Parser* parser) {
 static Node* parse_postfix(Parser* parser) {
   Node* operand = parse_primary(parser);
 
-  while(parser_check(parser, TOK_INCREMENT) || parser_check(parser, TOK_DECREMENT)) {
-    TokenType op = parser->current.type;
-    Token pos = parser->current;
-    parser_advance(parser);
+  for(;;) {
+    if(parser_check(parser, TOK_INCREMENT) || parser_check(parser, TOK_DECREMENT)) {
+      TokenType op = parser->current.type;
+      Token pos = parser->current;
+      parser_advance(parser);
 
-    operand = ast_new_update(op, operand, false, pos);
+      operand = ast_new_update(op, operand, false, pos);
+      continue;
+    }
+ 
+    if(parser_match(parser, TOK_LPAREN)) {
+      Token pos = parser->previous;
+      NodeList args;
+      nodelist_init(&args);
+
+      if(!parser_check(parser, TOK_RPAREN)) {
+        do {
+          nodelist_push(&args, parse_assignment(parser));
+        } while(parser_match(parser, TOK_COMMA));
+      }
+      parser_expect(parser, TOK_RPAREN, "expected ')' after arguments");
+      operand = ast_new_call(operand, args, pos);
+      continue;
+    }
+
+    break;
   }
-
+  
   return operand;
 }
 

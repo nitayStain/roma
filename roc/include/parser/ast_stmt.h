@@ -2,14 +2,9 @@
 #define AST_STMT_H
 
 #include "lexer/token.h"
+#include "parser/ast_list.h"
 
 typedef struct Node Node;
-
-typedef struct NodeList {
-  Node** items;
-  size_t count;
-  size_t capacity;
-} NodeList;
 
 typedef struct ExprStmtNode {
   Node* expr;

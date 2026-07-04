@@ -63,6 +63,10 @@ void ast_free(Node* node) {
     case NODE_UPDATE:
       ast_free(node->as.update.operand);
       break;
+    case NODE_CALL:
+      ast_free(node->as.call.callee);
+      nodelist_free(&node->as.call.args);
+      break;
 
     case NODE_EXPR_STMT:
       ast_free(node->as.expr_stmt.expr);
@@ -129,6 +133,12 @@ void ast_print(Node* node, int indent) {
     case NODE_UPDATE:
       LOG("Update op=%d is_prefix=%d\n", node->as.update.op, node->as.update.is_prefix);
       ast_print(node->as.update.operand, indent + 1);
+      break;
+    case NODE_CALL:
+      LOG("Call\n");
+      ast_print(node->as.call.callee, indent + 1);
+      for(size_t i = 0; i < node->as.call.args.count; i++)
+        ast_print(node->as.call.args.items[i], indent + 1);
       break;
 
     case NODE_EXPR_STMT:

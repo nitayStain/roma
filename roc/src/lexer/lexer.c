@@ -24,8 +24,14 @@ void skip_comments(Lexer* lexer);
 Token lexer_next(Lexer* lexer) {
   TokenType type;
 
-  skip_comments(lexer);
-  skip_whitespace(lexer);
+  // comments and whitespace can precede each other in any order (e.g. a
+  // comment on its own line has leading whitespace before it), so keep
+  // alternating until a pass changes nothing
+  for(;;) {
+    skip_whitespace(lexer);
+    if(curr(lexer) == '/' && peek(lexer) == '/') skip_comments(lexer);
+    else break;
+  }
 
   // position must be captured after skipping, otherwise it points at
   // wherever the previous token ended instead of where this one starts
@@ -46,6 +52,7 @@ Token lexer_next(Lexer* lexer) {
     case '{':   type = TOK_LBRACE;          break;
     case '}':   type = TOK_RBRACE;          break;
     case ';':   type = TOK_SEMICOLON;       break;
+    case ',':   type = TOK_COMMA;           break;
     case '+':   type = match(lexer, '+') ? TOK_INCREMENT
                       : match(lexer, '=') ? TOK_PLUS_EQUAL
                       : TOK_PLUS;            break;

@@ -9,3 +9,6 @@ while(i < 67) {
 }
 
 float meow = 150.5151;
+
+// TODO: take care of uncallable expressions in the analyzer
+what(hello(sub()()),2,3);

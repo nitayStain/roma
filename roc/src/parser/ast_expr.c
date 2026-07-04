@@ -74,3 +74,11 @@ Node* ast_new_update(TokenType op, Node* operand, bool is_prefix, Token pos) {
 
   return node;
 }
+
+Node* ast_new_call(Node* callee, NodeList args, Token pos) {
+  Node* node = ast_node_alloc(NODE_CALL, pos);
+  node->as.call.callee = callee;
+  node->as.call.args = args;
+
+  return node;
+}

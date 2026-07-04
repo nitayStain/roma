@@ -23,6 +23,7 @@ struct Node {
     BinaryNode binary;
     AssignNode assign;
     UpdateNode update;
+    CallNode call;
 
     ExprStmtNode expr_stmt;
     VarDeclNode var_decl;

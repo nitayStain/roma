@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 #include "lexer/token.h"
+#include "parser/ast_list.h"
 
 typedef struct Node Node;
 
@@ -56,6 +57,11 @@ typedef struct UpdateNode {
   bool is_prefix;
 } UpdateNode;
 
+typedef struct CallNode {
+  Node* callee;
+  NodeList args;
+} CallNode;
+
 Node* ast_new_literal_int(long value, Token pos);
 Node* ast_new_literal_float(double value, Token pos);
 Node* ast_new_literal_bool(bool value, Token pos);
@@ -66,5 +72,6 @@ Node* ast_new_unary(TokenType op, Node* operand, Token pos);
 Node* ast_new_binary(TokenType op, Node* left, Node* right, Token pos);
 Node* ast_new_assign(TokenType op, Node* target, Node* value, Token pos);
 Node* ast_new_update(TokenType op, Node* operand, bool is_prefix, Token pos);
+Node* ast_new_call(Node* callee, NodeList args, Token pos);
 
 #endif // AST_EXPR_H

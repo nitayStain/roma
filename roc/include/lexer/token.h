@@ -65,6 +65,7 @@ typedef enum TokenType {
   TOK_LBRACE, // '{'
   TOK_RBRACE, // '}'
   TOK_SEMICOLON, // ';'
+  TOK_COMMA, // ','
 
   TOK_ERROR, // lexer couldn't produce a valid token; details in Lexer.errors
   TOK_EOF
