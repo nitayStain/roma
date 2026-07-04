@@ -1,2 +1,6 @@
 obj/
 roma
+roc/obj/
+roc/libroc.a
+napoli/obj/
+napoli/libnapoli.a

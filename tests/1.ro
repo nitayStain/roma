@@ -1,0 +1,9 @@
+int a = 150;
+if(a >= 150) {
+  string hello = "Hello, World";
+}
+
+int i = 0;
+while(i < 67) {
+  i++;
+}

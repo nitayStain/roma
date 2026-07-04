@@ -1,49 +1,49 @@
-# --- Compiler and Flags ---
 CC          := gcc
-# -Iinclude tells the compiler to look in the include/ directory for headers
-# -MMD -MP generate per-object .d files listing header dependencies, so editing
-# a header (e.g. token.h) forces a rebuild of every .o that includes it.
-CFLAGS      := -Wall -Wextra -O2 -Iinclude -MMD -MP
-LDFLAGS     :=
 
-# --- Directories ---
+FLAGS      := -Wall -Wextra -O2 -I. -Iroc/include -MMD -MP
+LDFLAGS     := -Lroc -lroc -Lnapoli -lnapoli
+
 SRC_DIR     := src
 OBJ_DIR     := obj
-BIN_DIR     := .
+TARGET      := roma
 
-# --- Target Binary ---
-TARGET      := $(BIN_DIR)/roma
+ROC_LIB     := roc/libroc.a
+NAPOLI_LIB  := napoli/libnapoli.a
 
-# --- Files ---
-# Find all .c files in the src directory
 SRCS        := $(shell find $(SRC_DIR) -name "*.c")
-# Map those .c files to .o files inside the obj directory
 OBJS        := $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
-# Auto-generated header dependency files (one per .o)
 DEPS        := $(OBJS:.o=.d)
 
-# --- Phony Targets ---
-.PHONY: all clean
+.PHONY: all clean roc napoli
 
-# Default rule
 all: $(TARGET)
 
-# Rule to link the final executable
-$(TARGET): $(OBJS) | $(BIN_DIR)
-	$(CC) $(LDFLAGS) $^ -o $@
+# Objects must come before -lroc -lnapoli on the link line (the linker
+# only resolves symbols from a static library against what it's already
+# seen).
+$(TARGET): $(OBJS) $(ROC_LIB) $(NAPOLI_LIB)
+	$(CC) $(OBJS) $(LDFLAGS) -o $@
 
-# Rule to compile source files into object files
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
-	$(CC) $(CFLAGS) -c $< -o $@
+$(ROC_LIB):
+	$(MAKE) -C roc
 
-# Create directories if they do not exist
+$(NAPOLI_LIB):
+	$(MAKE) -C napoli
+
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Clean up build artifacts
+# Convenience shortcuts for building/testing a single module in isolation
+roc:
+	$(MAKE) -C roc
+
+napoli:
+	$(MAKE) -C napoli
+
 clean:
 	rm -rf $(OBJ_DIR) $(TARGET)
+	$(MAKE) -C roc clean
+	$(MAKE) -C napoli clean
 
-# Pull in generated dependency files (silently ignored if absent)
 -include $(DEPS)

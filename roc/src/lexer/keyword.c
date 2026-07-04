@@ -25,3 +25,11 @@ TokenType lookup_keyword(const char* start, size_t length) {
 
   return TOK_IDENTIFIER;
 }
+
+const char* keyword_name(TokenType type) {
+  for(size_t i = 0; i < keyword_count; i++) {
+    if(keywords[i].type == type) return keywords[i].name;
+  }
+
+  return "<unknown>";
+}

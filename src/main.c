@@ -1,8 +1,5 @@
-#include "options/options.h"
-#include "lexer/lexer.h"
-#include "parser/parser.h"
-#include "error.h"
-#include "logger.h"
+#include <roc/roc.h>
+#include <napoli/napoli.h>
 
 #include <errno.h>
 #include <libgen.h>
@@ -19,7 +16,6 @@ bool is_verbose = true;
 
 int main(int argc, char** argv)
 {
-
   Options options = {};
   init_options(&options, argv, argc);
   if(options.is_help) return 0;
@@ -48,6 +44,8 @@ int main(int argc, char** argv)
     error_stack_print(&parser.errors, stderr);
   } else {
     ast_print(program, 0);
+
+    napoli_init();
   }
 
   ast_free(program);

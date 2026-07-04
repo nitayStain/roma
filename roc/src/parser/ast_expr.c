@@ -24,6 +24,15 @@ Node* ast_new_literal_bool(bool value, Token pos) {
   return node;
 }
 
+Node* ast_new_literal_string(char* chars, int length, Token pos) {
+  Node* node = ast_node_alloc(NODE_LITERAL, pos);
+  node->as.literal.value_type = VAL_STRING;
+  node->as.literal.as_str.chars = chars;
+  node->as.literal.as_str.length = length;
+
+  return node;
+}
+
 Node* ast_new_identifier(Token name) {
   Node* node = ast_node_alloc(NODE_IDENTIFIER, name);
   node->as.identifier.name = name;

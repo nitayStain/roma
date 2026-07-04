@@ -43,6 +43,8 @@ void ast_free(Node* node) {
 
   switch(node->type) {
     case NODE_LITERAL:
+      if(node->as.literal.value_type == VAL_STRING) free(node->as.literal.as_str.chars);
+      break;
     case NODE_IDENTIFIER:
     case NODE_BREAK:
       break;

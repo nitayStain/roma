@@ -13,6 +13,16 @@
   X(TOK_STRING, "string") \
   X(TOK_UNDEFINED, "undefined") \
   X(TOK_TRUE,   "true")   \
-  X(TOK_FALSE,  "false")
+  X(TOK_FALSE,  "false")  \
+  X(TOK_I8,     "i8")     \
+  X(TOK_I16,    "i16")    \
+  X(TOK_I32,    "i32")    \
+  X(TOK_I64,    "i64")    \
+  X(TOK_UI8,    "ui8")    \
+  X(TOK_UI16,   "ui16")   \
+  X(TOK_UI32,   "ui32")   \
+  X(TOK_UI64,   "ui64")   \
+  X(TOK_F32,    "f32")    \
+  X(TOK_F64,    "f64")
 
 #endif // KEYWORD_LIST_H

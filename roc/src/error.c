@@ -35,10 +35,13 @@ bool error_stack_has_errors(ErrorStack* stack) {
 }
 
 void error_stack_print(ErrorStack* stack, FILE* out) {
-  for(size_t i = 0; i < stack->count; i++) {
-    Error* error = &stack->items[i];
-    fprintf(out, "%s: %s\n", error->type_name, error->message);
-  }
+  // only the first error prints for now, to avoid cascades of noise from
+  // one root cause; once warnings exist (a distinct, non-fatal severity)
+  // every warning should still print, just not every error
+  if(stack->count == 0) return;
+
+  Error* error = &stack->items[0];
+  fprintf(out, "%s: %s\n", error->type_name, error->message);
 }
 
 void error_stack_free(ErrorStack* stack) {
