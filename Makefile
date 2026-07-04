@@ -1,6 +1,6 @@
 CC          := gcc
 
-FLAGS      := -Wall -Wextra -O2 -I. -Iroc/include -MMD -MP
+CFLAGS      := -Wall -Wextra -O2 -I. -Iroc/include -MMD -MP
 LDFLAGS     := -Lroc -lroc -Lnapoli -lnapoli
 
 SRC_DIR     := src
@@ -14,7 +14,7 @@ SRCS        := $(shell find $(SRC_DIR) -name "*.c")
 OBJS        := $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 DEPS        := $(OBJS:.o=.d)
 
-.PHONY: all clean roc napoli
+.PHONY: all clean roc napoli $(ROC_LIB) $(NAPOLI_LIB)
 
 all: $(TARGET)
 

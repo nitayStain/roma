@@ -22,6 +22,7 @@ struct Node {
     UnaryNode unary;
     BinaryNode binary;
     AssignNode assign;
+    UpdateNode update;
 
     ExprStmtNode expr_stmt;
     VarDeclNode var_decl;

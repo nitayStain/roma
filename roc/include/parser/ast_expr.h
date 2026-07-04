@@ -50,6 +50,12 @@ typedef struct AssignNode {
   Node* value;
 } AssignNode;
 
+typedef struct UpdateNode {
+  TokenType op; // TOK_INCREMENT, TOK_DECREMENT
+  Node* operand;
+  bool is_prefix;
+} UpdateNode;
+
 Node* ast_new_literal_int(long value, Token pos);
 Node* ast_new_literal_float(double value, Token pos);
 Node* ast_new_literal_bool(bool value, Token pos);
@@ -59,5 +65,6 @@ Node* ast_new_identifier(Token name);
 Node* ast_new_unary(TokenType op, Node* operand, Token pos);
 Node* ast_new_binary(TokenType op, Node* left, Node* right, Token pos);
 Node* ast_new_assign(TokenType op, Node* target, Node* value, Token pos);
+Node* ast_new_update(TokenType op, Node* operand, bool is_prefix, Token pos);
 
 #endif // AST_EXPR_H

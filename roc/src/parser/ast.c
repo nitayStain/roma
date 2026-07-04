@@ -60,6 +60,9 @@ void ast_free(Node* node) {
       ast_free(node->as.assign.target);
       ast_free(node->as.assign.value);
       break;
+    case NODE_UPDATE:
+      ast_free(node->as.update.operand);
+      break;
 
     case NODE_EXPR_STMT:
       ast_free(node->as.expr_stmt.expr);
@@ -122,6 +125,10 @@ void ast_print(Node* node, int indent) {
       LOG("Assign op=%d\n", node->as.assign.op);
       ast_print(node->as.assign.target, indent + 1);
       ast_print(node->as.assign.value, indent + 1);
+      break;
+    case NODE_UPDATE:
+      LOG("Update op=%d is_prefix=%d\n", node->as.update.op, node->as.update.is_prefix);
+      ast_print(node->as.update.operand, indent + 1);
       break;
 
     case NODE_EXPR_STMT:

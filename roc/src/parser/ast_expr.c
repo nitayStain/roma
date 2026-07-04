@@ -65,3 +65,12 @@ Node* ast_new_assign(TokenType op, Node* target, Node* value, Token pos) {
 
   return node;
 }
+
+Node* ast_new_update(TokenType op, Node* operand, bool is_prefix, Token pos) {
+  Node* node = ast_node_alloc(NODE_UPDATE, pos);
+  node->as.update.op = op;
+  node->as.update.operand = operand;
+  node->as.update.is_prefix = is_prefix;
+
+  return node;
+}

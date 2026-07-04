@@ -27,6 +27,7 @@ static Node* parse_expression(Parser* parser);
 static Node* parse_assignment(Parser* parser);
 static Node* parse_binary(Parser* parser, int min_prec);
 static Node* parse_unary(Parser* parser);
+static Node* parse_postfix(Parser* parser);
 static Node* parse_primary(Parser* parser);
 
 static int binop_precedence(TokenType type);
@@ -66,9 +67,6 @@ Node* parse_program(Parser* parser) {
 
 static void parser_advance(Parser* parser) {
   parser->previous = parser->current;
-
-  // TOK_ERROR tokens are lexer-level failures already recorded in
-  // lexer->errors; skip them here instead of also raising a parser error
   Token token = lexer_next(parser->lexer);
   while(token.type == TOK_ERROR)
     token = lexer_next(parser->lexer);
@@ -383,6 +381,15 @@ static Node* parse_binary(Parser* parser, int min_prec) {
 }
 
 static Node* parse_unary(Parser* parser) {
+  if(parser_check(parser, TOK_INCREMENT) || parser_check(parser, TOK_DECREMENT)) {
+    TokenType op = parser->current.type;
+    Token pos = parser->current;
+    parser_advance(parser);
+
+    Node* operand = parse_unary(parser);
+    return ast_new_update(op, operand, true, pos);
+  }
+
   if(parser_check(parser, TOK_MINUS) || parser_check(parser, TOK_NOT) ||
      parser_check(parser, TOK_BIT_NOT)) {
     TokenType op = parser->current.type;
@@ -393,7 +400,21 @@ static Node* parse_unary(Parser* parser) {
     return ast_new_unary(op, operand, pos);
   }
 
-  return parse_primary(parser);
+  return parse_postfix(parser);
+}
+
+static Node* parse_postfix(Parser* parser) {
+  Node* operand = parse_primary(parser);
+
+  while(parser_check(parser, TOK_INCREMENT) || parser_check(parser, TOK_DECREMENT)) {
+    TokenType op = parser->current.type;
+    Token pos = parser->current;
+    parser_advance(parser);
+
+    operand = ast_new_update(op, operand, false, pos);
+  }
+
+  return operand;
 }
 
 static Node* parse_primary(Parser* parser) {

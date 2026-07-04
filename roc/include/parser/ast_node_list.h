@@ -7,7 +7,8 @@
   X(NODE_IDENTIFIER)  \
   X(NODE_UNARY)       \
   X(NODE_BINARY)      \
-  X(NODE_ASSIGN)
+  X(NODE_ASSIGN)      \
+  X(NODE_UPDATE)
 
 /* statement nodes - things that execute */
 #define AST_STMT_NODE_LIST \
