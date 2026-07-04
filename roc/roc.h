@@ -4,6 +4,7 @@
 #include "options/options.h"
 #include "lexer/lexer.h"
 #include "parser/parser.h"
+#include "program.h"
 #include "error.h"
 #include "logger.h"
 

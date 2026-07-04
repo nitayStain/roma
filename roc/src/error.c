@@ -53,3 +53,18 @@ void error_stack_free(ErrorStack* stack) {
   stack->count = 0;
   stack->capacity = 0;
 }
+
+void error_stack_extend(ErrorStack* dest, ErrorStack* src) {
+  for(size_t i = 0; i < src->count; i++) {
+    if(dest->count == dest->capacity) {
+      dest->capacity = dest->capacity ? dest->capacity * 2 : ERROR_STACK_INITIAL_CAPACITY;
+      dest->items = (Error*) realloc(dest->items, dest->capacity * sizeof(Error));
+    }
+    dest->items[dest->count++] = src->items[i];
+  }
+
+  free(src->items);
+  src->items = NULL;
+  src->count = 0;
+  src->capacity = 0;
+}

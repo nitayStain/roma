@@ -48,3 +48,4 @@ roma/
 - [ ] roc: a real type-checking / semantic analysis pass
 - [ ] runtime errors (try/catch)
 - [ ] figure out how the AST gets handed to napoli (direct, or through a bytecode IR)
+- [ ] roc: implement warning-type errors

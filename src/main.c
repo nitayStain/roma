@@ -12,8 +12,6 @@
 
 bool is_verbose = true;
 
-#define HEADER "ROMA 0.0.1\n"
-
 int main(int argc, char** argv)
 {
   Options options = {};
@@ -25,31 +23,22 @@ int main(int argc, char** argv)
   is_verbose = FORCE_VERBOSE ? true : options.verbose;
   
   LOG("Starting to parse code\n");
-  
-  Lexer* lexer = lexer_from_file(options.filename);
-  if(!lexer) {
+
+  Program* program = program_from_file(options.filename);
+  if(!program) {
     fprintf(stderr, "%s: failed reading '%s' (%s)\n", basename(argv[0]), options.filename, strerror(errno));
     return 1;
   }
-  
-  printf("%s", HEADER);
-  
-  Parser parser = parser_init(lexer);
 
-  Node* program = parse_program(&parser);
-
-  bool has_errors = error_stack_has_errors(&lexer->errors) || error_stack_has_errors(&parser.errors);
+  bool has_errors = program_has_errors(program);
   if(has_errors) {
-    error_stack_print(&lexer->errors, stderr);
-    error_stack_print(&parser.errors, stderr);
+    program_print_errors(program, stderr);
   } else {
-    ast_print(program, 0);
+    ast_print(program->ast, 0);
 
     // napoli_init();
   }
 
-  ast_free(program);
-  parser_free(&parser);
-  lexer_free(lexer);
+  program_free(program);
   return has_errors ? 1 : 0;
 }

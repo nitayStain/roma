@@ -25,4 +25,10 @@ bool error_stack_has_errors(ErrorStack* stack);
 void error_stack_print(ErrorStack* stack, FILE* out);
 void error_stack_free(ErrorStack* stack);
 
+// moves every error from src into dest (dest takes ownership of the Error
+// structs, including their heap-allocated messages) and empties src. lets
+// callers combine several error-producing stages (lexer, parser, ...) into
+// one stack without double-freeing.
+void error_stack_extend(ErrorStack* dest, ErrorStack* src);
+
 #endif // ERROR_H
