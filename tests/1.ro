@@ -7,3 +7,5 @@ int i = 0;
 while(i < 67) {
   i++;
 }
+
+float meow = 150.5151;
