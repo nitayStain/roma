@@ -45,7 +45,7 @@ int main(int argc, char** argv)
   } else {
     ast_print(program, 0);
 
-    napoli_init();
+    // napoli_init();
   }
 
   ast_free(program);
